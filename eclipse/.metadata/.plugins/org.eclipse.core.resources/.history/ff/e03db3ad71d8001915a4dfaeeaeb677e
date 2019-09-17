@@ -1,0 +1,62 @@
+package test.package1;
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
+import com.test.HbUtil;
+import com.test.entity.Customer;
+
+/**
+ * Servlet implementation class FirstServlet
+ */
+@WebServlet("/FirstServlet")
+public class FirstServlet extends HttpServlet {
+	
+  
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		    
+		String name=request.getParameter("");
+		Session session = null;
+		Transaction transaction = null;
+		try {
+			session = HbUtil.getSessionFactory().openSession();
+			transaction=session.getTransaction();
+			if(!transaction.isActive()) 
+				transaction.begin();
+			Customer customer = new Customer();
+			customer.setId(17);
+			customer.setFirstName("name");
+			customer.setLastName("Rastogi");
+			customer.setEmail("rNisha@gmail.com");
+			session.save(customer);	
+
+			transaction.commit();
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			e.printStackTrace();
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+
+		HbUtil.shutdown();
+	}
+		
+		
+	}
+
+}

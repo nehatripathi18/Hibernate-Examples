@@ -1,0 +1,5 @@
+package com.jpa.collection.test_hibernate;
+
+public class Books {
+
+}

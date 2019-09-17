@@ -1,0 +1,40 @@
+package test.hibernate;
+
+import javax.transaction.Transaction;
+
+import org.hibernate.SharedSessionContract;
+
+import com.mysql.cj.api.Session;
+
+public class InsertBatchExample {
+   public static void main(String args[]) {
+	Session session = null;
+    Transaction transaction = null;
+    int batchSize = 50;{
+    try {
+       session = (Session) HbUtil.getSessionFactory().openSession();
+       transaction = (Transaction) ((SharedSessionContract) session).beginTransaction();
+   for (long i = 1; i <= 100; i++) {
+          Employee employee = new Employee();
+          employee.setName("Rachna Tyagi " + i);
+          employee.setEmail("rtyagi@hotmail.com");
+          ((org.hibernate.Session) session).save(employee);
+          if (i > 0 && i % batchSize == 0) {
+             ((org.hibernate.Session) session).flush();
+             ((org.hibernate.Session) session).clear();
+          }
+       }
+       transaction.commit();
+    } catch (Exception e) {
+       e.printStackTrace();
+    } finally {
+       if (session != null) {
+          session.forceClose();
+       }
+    }
+    
+    //HbUtil.shutdown();
+ }
+	
+   }
+}
